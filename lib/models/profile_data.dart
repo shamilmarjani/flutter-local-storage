@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class ProfileData {
   final String name;
   final String title;
@@ -15,4 +17,21 @@ class ProfileData {
     title: 'AI Engineer',
     bio: 'Suka mengembangkan aplikasi berbasis AI dan Machine Learning. Memiliki pengalaman dalam pengolahan data dan pengembangan model prediktif.',
   );
+
+  Map<String, dynamic> toMap() => {
+      'name': name,
+      'title': title,
+      'bio': bio,
+    };
+
+  factory ProfileData.fromMap(Map<String, dynamic> map) => ProfileData(
+      name: map['name'] as String? ?? defaultData.name,
+      title: map['title'] as String? ?? defaultData.title,
+      bio: map['bio'] as String? ?? defaultData.bio,
+    );
+
+  String toJson() => jsonEncode(toMap());
+
+  factory ProfileData.fromJson(String source) =>
+    ProfileData.fromMap(jsonDecode(source) as Map<String, dynamic>);
 }

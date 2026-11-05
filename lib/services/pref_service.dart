@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/profile_data.dart';
 
 class PrefService {
   PrefService._(this._prefs);
@@ -23,4 +24,23 @@ class PrefService {
   Future<void> increaseOpenCount() async {
     await _prefs.setInt(_openCountKey, openCount + 1);
   }
-}
+
+  static const _kProfile = 'profile_data';
+
+  // ---------- Profil ----------
+  ProfileData get profile {
+    final raw = _prefs.getString(_kProfile);
+    if (raw == null) return ProfileData.defaultData;
+    try {
+      return ProfileData.fromJson(raw);
+    } catch (_) {
+      // Data rusak? Jangan crash, kembali ke bawaan.
+      return ProfileData.defaultData;
+    }
+  }
+
+  Future<void> saveProfile(ProfileData profile) =>
+      _prefs.setString(_kProfile, profile.toJson());
+
+  Future<void> clearProfile() => _prefs.remove(_kProfile);
+  }
